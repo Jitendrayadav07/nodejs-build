@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("Hello from Buildpack Node.js App! 🚀");
+  res.send("Hello from Buildpack Node.js App! This is new Think 🚀");
 });
 
 app.listen(3000, () => {
