@@ -1,0 +1,39 @@
+name: Build Node.js App with Buildpacks
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout source code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Pack CLI (Cloud Native Buildpacks)
+      - name: Set up Pack CLI
+        uses: buildpacks/github-actions/setup-pack@v5.0.0
+
+      # Step 3: Install Docker (required to store image)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 4: Build the image using Buildpacks (no push)
+      - name: Build image with Buildpacks
+        run: |
+          pack build nodejs-build --builder heroku/builder:24
+
+      # Step 5: Save Docker image as artifact (optional)
+      - name: Export Docker image
+        run: |
+          docker save nodejs-build -o nodejs-build.tar
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nodejs-build-image
+          path: nodejs-build.tar
